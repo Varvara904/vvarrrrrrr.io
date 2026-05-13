@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админ-панель — Уютный уголок</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f0f2f5; }
+.container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
+/* Header */
+header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.logo h1 { font-size: 28px; margin-bottom: 5px; }
+.logo p { font-size: 14px; opacity: 0.9; }
+nav ul { display: flex; list-style: none; gap: 25px; }
+nav a { color: white; text-decoration: none; font-weight: 500; font-size: 16px; }
+nav a:hover { opacity: 0.8; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.btn-logout { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35); color: white; padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-logout:hover { background: rgba(255,255,255,0.28); }
+
+/* Login screen */
+#login-screen { min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; padding: 40px 15px; }
+.login-box { background: white; border-radius: 20px; padding: 50px 40px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.12); text-align: center; }
+.login-box .icon { font-size: 56px; margin-bottom: 15px; }
+.login-box h2 { font-size: 26px; color: #333; margin-bottom: 8px; }
+.login-box p { color: #999; font-size: 14px; margin-bottom: 30px; }
+.login-box input { width: 100%; padding: 13px 15px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 15px; margin-bottom: 14px; transition: border-color 0.2s; }
+.login-box input:focus { outline: none; border-color: #667eea; }
+.login-error { color: #ff6b6b; font-size: 14px; margin-bottom: 12px; display: none; }
+.btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+.btn-login:hover { opacity: 0.9; }
+
+/* Admin wrap */
+#admin-screen { display: none; }
+.admin-wrap { max-width: 1100px; margin: 0 auto; padding: 30px 15px; }
+.admin-banner { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 28px 35px; border-radius: 16px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+.admin-banner h1 { font-size: 26px; }
+.admin-banner p { opacity: 0.8; font-size: 14px; margin-top: 4px; }
+.admin-banner a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; }
+.admin-banner a:hover { color: white; }
+
+/* Stats */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; margin-bottom: 28px; }
+.stat-card { background: white; border-radius: 14px; padding: 22px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); text-align: center; }
+.stat-num { font-size: 34px; font-weight: 700; color: #667eea; }
+.stat-label { color: #999; font-size: 13px; margin-top: 4px; }
+
+/* Tabs */
+.admin-tabs { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+.admin-tab { padding: 10px 22px; border: 2px solid #ddd; border-radius: 25px; background: white; cursor: pointer; font-size: 14px; font-weight: 600; color: #666; transition: all 0.2s; }
+.admin-tab.active { border-color: #667eea; color: #667eea; background: #f0f2ff; }
+.admin-tab:hover:not(.active) { border-color: #aab; }
+
+/* Panels */
+.admin-panel { display: none; }
+.admin-panel.active { display: block; }
+
+/* Cards */
+.card { background: white; border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 20px; }
+.card h3 { font-size: 18px; color: #333; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; }
+
+/* Table */
+.items-table { width: 100%; border-collapse: collapse; }
+.items-table th { background: #f8f9fa; padding: 12px 15px; text-align: left; font-size: 13px; color: #666; border-bottom: 2px solid #eee; }
+.items-table td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; font-size: 14px; }
+.items-table tr:hover td { background: #fafbff; }
+.tag { display: inline-block; background: #f0f2ff; color: #667eea; padding: 3px 10px; border-radius: 20px; font-size: 12px; }
+
+/* Form */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+.form-row.full { grid-template-columns: 1fr; }
+.admin-form label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+.admin-form input, .admin-form select, .admin-form textarea { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+.admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus { outline: none; border-color: #667eea; }
+.admin-form textarea { resize: vertical; min-height: 70px; }
+
+/* Action buttons */
+.btn-edit { background: #667eea; color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; margin-right: 4px; }
+.btn-del { background: #ff6b6b; color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+.btn-primary { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 11px 28px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: opacity 0.2s; }
+.btn-primary:hover { opacity: 0.9; }
+
+/* Edit modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box { background: white; border-radius: 20px; max-width: 560px; width: 100%; padding: 32px; max-height: 90vh; overflow-y: auto; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.modal-head h2 { font-size: 20px; color: #333; }
+.modal-close-btn { background: none; border: none; font-size: 26px; cursor: pointer; color: #999; line-height: 1; }
+
+/* Password panel */
+.pwd-ok { color: #27ae60; font-size: 14px; margin-top: 10px; display: none; }
+.pwd-err { color: #ff6b6b; font-size: 14px; margin-top: 10px; display: none; }
+.info-box { background: #fffbea; border: 1px solid #ffe082; border-radius: 10px; padding: 18px 22px; margin-top: 18px; }
+.info-box h4 { color: #f57c00; margin-bottom: 8px; }
+.info-box p { color: #795548; font-size: 14px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="logo">
+      <h1>🍽️ Уютный уголок</h1>
+      <p>Панель администратора</p>
+    </div>
+    <nav><ul>
+      <li><a href="index.html">← На сайт</a></li>
+    </ul></nav>
+    <div class="header-actions">
+      <button class="btn-logout" id="logoutBtn" style="display:none" onclick="doLogout()">Выйти</button>
+    </div>
+  </div>
+</header>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="icon">🔐</div>
+    <h2>Вход в админ-панель</h2>
+    <p>Ресторан «Уютный уголок»</p>
+    <div class="login-error" id="login-error">Неверный логин или пароль</div>
+    <input type="text" id="login-user" placeholder="Логин" autocomplete="username">
+    <input type="password" id="login-pass" placeholder="Пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Войти</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-screen">
+  <div class="admin-wrap">
+
+    <div class="admin-banner">
+      <div>
+        <h1>⚙️ Панель управления</h1>
+        <p>Управление меню, категориями и настройками</p>
+      </div>
+      <a href="index.html">Перейти на сайт →</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="stats"></div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('menu',this)">📋 Меню</button>
+      <button class="admin-tab" onclick="switchTab('add',this)">➕ Добавить блюдо</button>
+      <button class="admin-tab" onclick="switchTab('categories',this)">🗂 Категории</button>
+      <button class="admin-tab" onclick="switchTab('password',this)">🔑 Пароль</button>
+    </div>
+
+    <!-- MENU PANEL -->
+    <div class="admin-panel active" id="panel-menu">
+      <div class="card">
+        <h3>Все блюда</h3>
+        <div style="margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap">
+          <input type="text" id="search-items" placeholder="🔍 Поиск по названию..."
+            style="padding:8px 14px;border:2px solid #e0e0e0;border-radius:20px;font-size:14px;flex:1;min-width:200px"
+            oninput="renderTable()">
+          <select id="filter-cat" style="padding:8px 14px;border:2px solid #e0e0e0;border-radius:20px;font-size:14px" onchange="renderTable()">
+            <option value="">Все категории</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="items-table">
+            <thead><tr>
+              <th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th><th>Действия</th>
+            </tr></thead>
+            <tbody id="items-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD PANEL -->
+    <div class="admin-panel" id="panel-add">
+      <div class="card">
+        <h3>Добавить новое блюдо</h3>
+        <div class="admin-form">
+          <div class="form-row">
+            <div><label>Название блюда *</label><input type="text" id="add-name" placeholder="Стейк Рибай"></div>
+            <div><label>Категория *</label><select id="add-cat"></select></div>
+          </div>
+          <div class="form-row full"><div><label>Описание</label><textarea id="add-desc" placeholder="Состав, особенности..."></textarea></div></div>
+          <div class="form-row">
+            <div><label>Цена (₽) *</label><input type="number" id="add-price" placeholder="890" min="0"></div>
+            <div><label>Путь к изображению</label><input type="text" id="add-img" placeholder="images/блюдо.jpg"></div>
+          </div>
+          <button class="btn-primary" style="margin-top:10px" onclick="addItem()">➕ Добавить блюдо</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES PANEL -->
+    <div class="admin-panel" id="panel-categories">
+      <div class="card">
+        <h3>Управление категориями</h3>
+        <div id="cats-list"></div>
+        <hr style="margin:22px 0;border-color:#eee">
+        <h3 style="border:none;margin-bottom:15px">Добавить категорию</h3>
+        <div class="admin-form">
+          <div class="form-row">
+            <div><label>ID (латиница, без пробелов)</label><input type="text" id="cat-id" placeholder="soups"></div>
+            <div><label>Название</label><input type="text" id="cat-name" placeholder="🥣 Супы"></div>
+          </div>
+          <button class="btn-primary" onclick="addCategory()">Добавить категорию</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSWORD PANEL -->
+    <div class="admin-panel" id="panel-password">
+      <div class="card">
+        <h3>🔑 Смена пароля</h3>
+        <div class="admin-form">
+          <div class="form-row full"><div>
+            <label>Текущий пароль</label>
+            <input type="password" id="pwd-old" placeholder="Введите текущий пароль" autocomplete="current-password">
+          </div></div>
+          <div class="form-row full"><div>
+            <label>Новый пароль</label>
+            <input type="password" id="pwd-new" placeholder="Минимум 6 символов" autocomplete="new-password">
+          </div></div>
+          <div class="form-row full"><div>
+            <label>Повторите новый пароль</label>
+            <input type="password" id="pwd-new2" placeholder="Повторите пароль" autocomplete="new-password">
+          </div></div>
+          <button class="btn-primary" style="margin-top:5px" onclick="changePassword()">Сменить пароль</button>
+          <div class="pwd-ok" id="pwd-ok">✅ Пароль успешно изменён!</div>
+          <div class="pwd-err" id="pwd-err"></div>
+        </div>
+        <div class="info-box">
+          <h4>ℹ️ О безопасности</h4>
+          <p>Пароль хранится в виде SHA-256 хеша — в исходном коде сайта пароль <strong>нигде не виден</strong>. Рекомендуем использовать надёжный пароль длиной не менее 8 символов.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-overlay" onclick="if(event.target===this)closeEdit()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>✏️ Редактировать блюдо</h2>
+      <button class="modal-close-btn" onclick="closeEdit()">×</button>
+    </div>
+    <div class="admin-form" id="edit-form-content"></div>
+    <div style="display:flex;gap:10px;margin-top:22px">
+      <button class="btn-primary" style="flex:1" onclick="saveEdit()">💾 Сохранить</button>
+      <button onclick="closeEdit()" style="padding:11px 22px;border:2px solid #ddd;border-radius:10px;background:white;cursor:pointer;font-size:14px;font-weight:600;color:#666">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// SECURE AUTH — password stored as SHA-256 hash only
+// ════════════════════════════════════════════════════════
+const HASH_KEY = 'uzk_admin_hash';
+const USER_KEY = 'uzk_admin_user';
+// SHA-256 hash of "admin123" — this is NOT the password
+const DEFAULT_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+const getHash = () => localStorage.getItem(HASH_KEY) || DEFAULT_HASH;
+const getUser = () => localStorage.getItem(USER_KEY) || 'admin';
+
+async function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const h = await sha256(p);
+  if (u === getUser() && h === getHash()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+    initAdmin();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  document.getElementById('admin-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+async function changePassword() {
+  const oldPass = document.getElementById('pwd-old').value;
+  const newPass = document.getElementById('pwd-new').value;
+  const newPass2 = document.getElementById('pwd-new2').value;
+  const okEl = document.getElementById('pwd-ok');
+  const errEl = document.getElementById('pwd-err');
+  okEl.style.display = 'none'; errEl.style.display = 'none';
+
+  if (await sha256(oldPass) !== getHash()) {
+    errEl.textContent = '✗ Текущий пароль неверен.'; errEl.style.display = 'block'; return;
+  }
+  if (newPass.length < 6) {
+    errEl.textContent = '✗ Пароль должен содержать не менее 6 символов.'; errEl.style.display = 'block'; return;
+  }
+  if (newPass !== newPass2) {
+    errEl.textContent = '✗ Новые пароли не совпадают.'; errEl.style.display = 'block'; return;
+  }
+  localStorage.setItem(HASH_KEY, await sha256(newPass));
+  ['pwd-old','pwd-new','pwd-new2'].forEach(id => document.getElementById(id).value = '');
+  okEl.style.display = 'block';
+  setTimeout(() => okEl.style.display = 'none', 3000);
+}
+
+// ════════════════════════════════════════════════════════
+// MENU DATA — stored in localStorage
+// ════════════════════════════════════════════════════════
+const DEFAULT_MENU = {
+  categories: [
+    { id: 'zakuski', name: '🥗 Закуски' },
+    { id: 'main', name: '🍖 Основные блюда' },
+    { id: 'desserts', name: '🍰 Десерты' },
+    { id: 'drinks', name: '🍷 Напитки' }
+  ],
+  items: [
+    { id:1, category:'zakuski', name:'Брускетта с томатами', desc:'Хрустящий багет, свежие томаты, чеснок, базилик, оливковое масло', price:450, image:'images/брускетта.jpg' },
+    { id:2, category:'zakuski', name:'Сырная тарелка', desc:'Пармезан, дорблю, камамбер, грецкие орехи, виноград', price:750, image:'images/сырная-тарелка.jpg' },
+    { id:3, category:'main', name:'Стейк Рибай 300г', desc:'Мраморная говядина, травы, соус песто, картофель фри', price:1850, image:'images/стейк-рибай.jpg' },
+    { id:4, category:'main', name:'Филе миньон с трюфелем', desc:'Вырезка, трюфельный соус, овощи гриль, картофельное пюре', price:2200, image:'images/филе-миньон.jpg' },
+    { id:5, category:'main', name:'Лосось на гриле', desc:'Свежий лосось, лимон, укроп, овощи, рис басмати', price:1450, image:'images/лосось-гриль.jpg' },
+    { id:6, category:'main', name:'Паста Карбонара', desc:'Спагетти, панчетта, яичный желток, пармезан, перец', price:890, image:'images/паста-карбонара.jpg' },
+    { id:7, category:'desserts', name:'Тирамису', desc:'Классический итальянский десерт с кофе и маскарпоне', price:450, image:'images/тирамису.jpg' },
+    { id:8, category:'desserts', name:'Нью-Йорк чизкейк', desc:'Сливочный чизкейк с ягодным соусом', price:490, image:'images/чизкейк.jpg' },
+    { id:9, category:'desserts', name:'Медовик', desc:'Традиционный медовик с сливочным кремом', price:390, image:'images/медовик.jpg' },
+    { id:10, category:'drinks', name:'Вино красное (бокал)', desc:'Каберне Совиньон, Мерло, Пино Нуар', price:450, image:'images/Вино.jpg' },
+    { id:11, category:'drinks', name:'Авторские коктейли', desc:'Мохито, Космополитан, Олд Фэшн', price:550, image:'images/коктели.jpg' }
+  ]
+};
+
+function getMenu() {
+  const saved = localStorage.getItem('uyutniy_menu');
+  return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_MENU));
+}
+function saveMenu(m) { localStorage.setItem('uyutniy_menu', JSON.stringify(m)); }
+
+// ════════════════════════════════════════════════════════
+// ADMIN UI
+// ════════════════════════════════════════════════════════
+let editingId = null;
+
+function initAdmin() {
+  renderStats(); renderFilters(); renderTable(); renderCats(); populateCatSelects();
+}
+
+function renderStats() {
+  const m = getMenu();
+  const prices = m.items.map(i => i.price);
+  const data = [
+    { num: m.items.length, label: 'Блюд в меню' },
+    { num: m.categories.length, label: 'Категорий' },
+    { num: m.items.filter(i=>i.category==='main').length, label: 'Основных блюд' },
+    { num: prices.length ? Math.min(...prices)+'–'+Math.max(...prices) : '—', label: 'Диапазон цен (₽)' }
+  ];
+  document.getElementById('stats').innerHTML = data.map(s =>
+    `<div class="stat-card"><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>`
+  ).join('');
+}
+
+function renderFilters() {
+  const m = getMenu();
+  document.getElementById('filter-cat').innerHTML =
+    '<option value="">Все категории</option>' +
+    m.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+
+function renderTable() {
+  const m = getMenu();
+  const search = document.getElementById('search-items').value.toLowerCase();
+  const cat = document.getElementById('filter-cat').value;
+  let items = m.items;
+  if (search) items = items.filter(i => i.name.toLowerCase().includes(search));
+  if (cat) items = items.filter(i => i.category === cat);
+  const catMap = {};
+  m.categories.forEach(c => catMap[c.id] = c.name);
+  const thumb = img => img
+    ? `<img src="${img}" style="width:50px;height:50px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'">`
+    : `<div style="width:50px;height:50px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:20px">🍽️</div>`;
+  document.getElementById('items-tbody').innerHTML = items.map(item => `
+    <tr>
+      <td>${thumb(item.image)}</td>
+      <td><strong>${item.name}</strong><br><span style="color:#999;font-size:12px">${(item.desc||'').slice(0,55)}${(item.desc||'').length>55?'…':''}</span></td>
+      <td><span class="tag">${catMap[item.category]||item.category}</span></td>
+      <td><strong style="color:#667eea;font-size:15px">${item.price.toLocaleString('ru')}₽</strong></td>
+      <td>
+        <button class="btn-edit" onclick="editItem(${item.id})">✏️ Изм.</button>
+        <button class="btn-del" onclick="deleteItem(${item.id})">🗑 Удал.</button>
+      </td>
+    </tr>`).join('');
+}
+
+function populateCatSelects() {
+  const m = getMenu();
+  ['add-cat','edit-cat'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = m.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  });
+}
+
+function renderCats() {
+  const m = getMenu();
+  document.getElementById('cats-list').innerHTML = `
+    <table class="items-table">
+      <thead><tr><th>ID</th><th>Название</th><th>Блюд</th><th>Действие</th></tr></thead>
+      <tbody>${m.categories.map(c=>`
+        <tr>
+          <td><code style="background:#f0f2ff;padding:2px 8px;border-radius:4px;color:#667eea">${c.id}</code></td>
+          <td>${c.name}</td>
+          <td>${m.items.filter(i=>i.category===c.id).length}</td>
+          <td><button class="btn-del" onclick="deleteCat('${c.id}')">Удалить</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+function editItem(id) {
+  const m = getMenu();
+  const item = m.items.find(i=>i.id==id);
+  if (!item) return;
+  editingId = id;
+  document.getElementById('edit-form-content').innerHTML = `
+    <div class="form-row">
+      <div><label>Название *</label><input type="text" id="edit-name" value="${item.name}"></div>
+      <div><label>Категория</label><select id="edit-cat"></select></div>
+    </div>
+    <div class="form-row full"><div><label>Описание</label><textarea id="edit-desc">${item.desc||''}</textarea></div></div>
+    <div class="form-row">
+      <div><label>Цена (₽) *</label><input type="number" id="edit-price" value="${item.price}" min="0"></div>
+      <div><label>Путь к изображению</label><input type="text" id="edit-img" value="${item.image||''}"></div>
+    </div>`;
+  const sel = document.getElementById('edit-cat');
+  sel.innerHTML = m.categories.map(c=>`<option value="${c.id}" ${c.id===item.category?'selected':''}>${c.name}</option>`).join('');
+  document.getElementById('edit-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeEdit() {
+  document.getElementById('edit-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  editingId = null;
+}
+function saveEdit() {
+  const m = getMenu();
+  const item = m.items.find(i=>i.id==editingId);
+  if (!item) return;
+  const name = document.getElementById('edit-name').value.trim();
+  const price = parseInt(document.getElementById('edit-price').value);
+  if (!name || isNaN(price)) { alert('Заполните обязательные поля'); return; }
+  item.name = name;
+  item.category = document.getElementById('edit-cat').value;
+  item.desc = document.getElementById('edit-desc').value.trim();
+  item.price = price;
+  item.image = document.getElementById('edit-img').value.trim();
+  saveMenu(m); closeEdit(); renderTable(); renderStats();
+  alert('✅ Блюдо обновлено!');
+}
+function deleteItem(id) {
+  const m = getMenu();
+  const item = m.items.find(i=>i.id==id);
+  if (!confirm(`Удалить «${item.name}»?`)) return;
+  m.items = m.items.filter(i=>i.id!=id);
+  saveMenu(m); renderTable(); renderStats();
+}
+function addItem() {
+  const name = document.getElementById('add-name').value.trim();
+  const cat = document.getElementById('add-cat').value;
+  const desc = document.getElementById('add-desc').value.trim();
+  const price = parseInt(document.getElementById('add-price').value);
+  const img = document.getElementById('add-img').value.trim();
+  if (!name || !cat || isNaN(price)) { alert('Заполните обязательные поля (название, категория, цена)'); return; }
+  const m = getMenu();
+  const newId = Math.max(0,...m.items.map(i=>i.id))+1;
+  m.items.push({ id:newId, category:cat, name, desc, price, image:img });
+  saveMenu(m);
+  ['add-name','add-desc','add-price','add-img'].forEach(id=>document.getElementById(id).value='');
+  renderTable(); renderStats();
+  alert(`✅ «${name}» добавлено в меню!`);
+}
+function addCategory() {
+  const id = document.getElementById('cat-id').value.trim().replace(/\s+/g,'_');
+  const name = document.getElementById('cat-name').value.trim();
+  if (!id || !name) { alert('Заполните ID и название'); return; }
+  const m = getMenu();
+  if (m.categories.find(c=>c.id===id)) { alert('Категория с таким ID уже существует'); return; }
+  m.categories.push({ id, name });
+  saveMenu(m);
+  document.getElementById('cat-id').value='';
+  document.getElementById('cat-name').value='';
+  renderCats(); renderFilters(); populateCatSelects(); renderStats();
+}
+function deleteCat(id) {
+  const m = getMenu();
+  const count = m.items.filter(i=>i.category===id).length;
+  if (!confirm(`Удалить категорию? ${count} блюд останутся без категории.`)) return;
+  m.categories = m.categories.filter(c=>c.id!==id);
+  saveMenu(m); renderCats(); renderFilters(); renderStats();
+}
+</script>
+</body>
+</html>

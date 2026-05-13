@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Меню - Ресторан "Уютный уголок"</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5; }
+.container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.logo h1 { font-size: 28px; margin-bottom: 5px; }
+.logo p { font-size: 14px; opacity: 0.9; }
+nav ul { display: flex; list-style: none; gap: 25px; }
+nav a { color: white; text-decoration: none; font-weight: 500; font-size: 16px; }
+nav a:hover { opacity: 0.8; }
+.contact-info { text-align: right; }
+.contact-info p { margin: 5px 0; font-size: 14px; }
+.page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0; text-align: center; }
+.page-header h1 { font-size: 42px; margin-bottom: 20px; }
+.page-header p { font-size: 18px; opacity: 0.9; }
+.menu-section { background: white; padding: 60px 0; margin-bottom: 30px; }
+.menu-category { font-size: 28px; color: #333; margin-bottom: 40px; text-align: center; }
+.menu-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+.menu-item { display: flex; gap: 20px; padding: 20px; border-radius: 10px; background: #f8f9fa; }
+.menu-item:hover { background: #e9ecef; }
+.menu-item-image { width: 120px; height: 120px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; flex-shrink: 0; }
+.menu-item-info h3 { font-size: 20px; color: #333; margin-bottom: 10px; }
+.menu-item-info p { color: #666; margin-bottom: 15px; }
+.menu-item-price { font-size: 22px; font-weight: 700; color: #667eea; }
+.btn { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; margin-top: 20px; }
+.btn:hover { opacity: 0.9; }
+footer { background: #2c3e50; color: white; padding: 40px 0 20px; margin-top: 60px; }
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px; }
+.footer-col h3 { font-size: 22px; margin-bottom: 20px; color: white; }
+.footer-col p, .footer-col ul li a { color: #bdc3c7; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 10px; }
+.footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid #34495e; color: #bdc3c7; font-size: 14px; }
+</style>
+
+<style>
+.header-actions { display: flex; align-items: center; gap: 18px; }
+.admin-header-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.15); color: white; text-decoration: none;
+  padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.35); transition: all 0.2s; white-space: nowrap;
+}
+.admin-header-btn:hover { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body>
+<header>
+<div class="container">
+<div class="logo">
+<h1>🍽️ Уютный уголок</h1>
+<p>Ресторан домашней кухни</p>
+</div>
+<nav>
+<ul>
+<li><a href="index.html">Главная</a></li>
+<li><a href="menu.html">Меню</a></li>
+<li><a href="about.html">О ресторане</a></li>
+<li><a href="booking.html">Бронирование</a></li>
+<li><a href="contacts.html">Контакты</a></li>
+</ul>
+</nav>
+    <div class="header-actions">
+      <div class="contact-info">
+        <p>📞 +7 (495) 123-45-67</p>
+        <p>📧 info@cozy-corner.ru</p>
+      </div>
+      <a href="admin.html" class="admin-header-btn">⚙️ Админка</a>
+    </div>
+</div>
+</header>
+<section class="page-header">
+<div class="container">
+<h1>📖 Наше меню</h1>
+<p>Только свежие ингредиенты и домашние рецепты</p>
+</div>
+</section>
+<!-- Закуски -->
+<section class="menu-section">
+<div class="container">
+<h2 class="menu-category">🥗 Закуски</h2>
+<div class="menu-items">
+<div class="menu-item">
+<img src="images/брускетта.jpg" alt="Брускетта с томатами" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Брускетта с томатами</h3>
+<p>Хрустящий багет, свежие томаты, чеснок, базилик, оливковое масло</p>
+<span class="menu-item-price">450₽</span>
+</div>
+</div>
+<div class="menu-item">
+<img src="images/сырная-тарелка.jpg" alt="Сырная тарелка" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Сырная тарелка</h3>
+<p>Пармезан, дорблю, камамбер, грецкие орехи, виноград</p>
+<span class="menu-item-price">750₽</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Основные блюда -->
+<section class="menu-section">
+<div class="container">
+<h2 class="menu-category">🍖 Основные блюда</h2>
+<div class="menu-items">
+<div class="menu-item">
+<img src="images/стейк-рибай.jpg" alt="Стейк Рибай 300г" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Стейк Рибай 300г</h3>
+<p>Мраморная говядина, травы, соус песто, картофель фри</p>
+<span class="menu-item-price">1850₽</span>
+</div>
+</div>
+<div class="menu-item">
+<img src="images/филе-миньон.jpg" alt="Филе миньон с трюфелем" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Филе миньон с трюфелем</h3>
+<p>Вырезка, трюфельный соус, овощи гриль, картофельное пюре</p>
+<span class="menu-item-price">2200₽</span>
+</div>
+</div>
+<div class="menu-item">
+<img src="images/лосось-гриль.jpg" alt="Лосось на гриле" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Лосось на гриле</h3>
+<p>Свежий лосось, лимон, укроп, овощи, рис басмати</p>
+<span class="menu-item-price">1450₽</span>
+</div>
+</div>
+<div class="menu-item">
+<img src="images/паста-карбонара.jpg" alt="Паста Карбонара" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Паста Карбонара</h3>
+<p>Спагетти, панчетта, яичный желток, пармезан, перец</p>
+<span class="menu-item-price">890₽</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Десерты -->
+<section class="menu-section">
+<div class="container">
+<h2 class="menu-category">🍰 Десерты</h2>
+<div class="menu-items">
+<div class="menu-item">
+<img src="images/тирамису.jpg" alt="Тирамису" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Тирамису</h3>
+<p>Классический итальянский десерт с кофе и маскарпоне</p>
+<span class="menu-item-price">450₽</span>
+</div>
+</div>
+<div class="menu-item">
+<img src="images/чизкейк.jpg" alt="Нью-Йорк чизкейк" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Нью-Йорк чизкейк</h3>
+<p>Сливочный чизкейк с ягодным соусом</p>
+<span class="menu-item-price">490₽</span>
+</div>
+</div>
+<div class="menu-item">
+<img src="images/медовик.jpg" alt="Медовик" class="menu-item-image">
+<div class="menu-item-info">
+<h3>Медовик</h3>
+<p>Традиционный медовик с сливочным кремом</p>
+<span class="menu-item-price">390₽</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Напитки -->
+<section class="menu-section">
+<div class="container">
+<h2 class="menu-category">🍷 Напитки</h2>
+<div class="menu-items">
+<div class="menu-item">
+<div class="menu-item-info">
+<h3>Вино красное (бокал)</h3>
+<p>Каберне Совиньон, Мерло, Пино Нуар</p>
+<img src="images/Вино (1).jpg" alt="Вино" class="menu-item-image">
+<span class="menu-item-price">от 450₽</span>
+</div>
+</div>
+<div class="menu-item">
+<div class="menu-item-info">
+<h3>Вино белое (бокал)</h3>
+<p>Шардоне, Совиньон Блан, Рислинг</p>
+<img src="images/белое вино.jpg" alt="белое вино" class="menu-item-image">
+<span class="menu-item-price">от 450₽</span>
+</div>
+</div>
+<div class="menu-item">
+<div class="menu-item-info">
+<h3>Крафтовое пиво</h3>
+<p>IPA, Stout, Wheat Beer (0.5л)</p>
+<img src="images/крафт.jpg" alt="коктели" class="menu-item-image">
+<span class="menu-item-price">от 350₽</span>
+</div>
+</div>
+<div class="menu-item">
+<div class="menu-item-info">
+<h3>Авторские коктейли</h3>
+<p>Мохито, Космополитан, Олд Фэшн</p>
+<img src="images/Коктели.jpg" alt="коктели" class="menu-item-image">
+<span class="menu-item-price">от 550₽</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div style="text-align: center; padding: 40px;">
+<a href="booking.html" class="btn">Забронировать столик</a>
+</div>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<h3>Уютный уголок</h3>
+<p>Ресторан домашней кухни</p>
+</div>
+<div class="footer-col">
+<h3>Быстрые ссылки</h3>
+<ul>
+<li><a href="index.html">Главная</a></li>
+<li><a href="about.html">О ресторане</a></li>
+<li><a href="booking.html">Бронирование</a></li>
+<li><a href="contacts.html">Контакты</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h3>Контакты</h3>
+<p>ул. Гастрономическая, 15</p>
+<p>Москва, 123456</p>
+<p>+7 (495) 123-45-67</p>
+</div>
+<div class="footer-col">
+<h3>Документы</h3>
+<ul>
+<li><a href="privacy.html" style="color:#bdc3c7;text-decoration:none">Политика конфиденциальности</a></li>
+<li><a href="terms.html" style="color:#bdc3c7;text-decoration:none">Пользовательское соглашение</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2026 Уютный уголок. Все права защищены.</p>
+</div>
+</div>
+</footer>
+</body>
+</html>
